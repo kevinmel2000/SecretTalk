@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "193259334611",
+    "firebase_url": "https://secrettalk-e6649.firebaseio.com",
+    "project_id": "secrettalk-e6649",
+    "storage_bucket": "secrettalk-e6649.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:193259334611:android:2cdb587f2947a39f",
+        "android_client_info": {
+          "package_name": "com.training.leos.secrettalk"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "193259334611-sdqpghs1naco5t8casprhl464ig1v3se.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.training.leos.secrettalk",
+            "certificate_hash": "1d25930b6132955e124f13b556f4396db4c1653f"
+          }
+        },
+        {
+          "client_id": "193259334611-0k1qrpv4hqldp5vigf2s3618juo2p0uk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD4YVuA6l-cYw1ERvUj0_5fTKiiwKCSu3Q"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "193259334611-0k1qrpv4hqldp5vigf2s3618juo2p0uk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

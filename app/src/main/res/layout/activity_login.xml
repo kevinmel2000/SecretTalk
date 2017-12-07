@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/size_16dp"
+    android:background="@color/primary_dark"
+    tools:context="com.training.leos.secrettalk.ui.signIn.SignInActivity">
+
+    <include
+        android:id="@+id/inc_login_banner"
+        layout="@layout/custom_login_banner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/inc_login_banner"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/size_8dp">
+            <AutoCompleteTextView
+                android:id="@+id/actv_login_actv_email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textEmailAddress"
+                android:hint="Email"
+                android:maxLines="1" />
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/_8sdp"
+            android:paddingRight="@dimen/_8sdp"
+            android:paddingBottom="@dimen/_8sdp">
+            <EditText
+                android:id="@+id/actv_login_act_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword"
+                android:hint="Password"
+                android:maxLines="1" />
+        </android.support.design.widget.TextInputLayout>
+
+        <Button
+            android:id="@+id/btn_login_act_signin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/primary_light"
+            android:fontFamily="sans-serif-smallcaps"
+            android:padding="@dimen/_8sdp"
+            android:text="Sign In" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/_8sdp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Don't have an account? Sign Up "
+                android:textAlignment="center"
+                android:textColor="@color/color_white" />
+
+            <TextView
+                android:id="@+id/tv_btn_sign_up"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:text="here"
+                android:textColor="@color/primary_light"
+                android:textSize="14sp" />
+        </LinearLayout>
+    </LinearLayout>
+</RelativeLayout>
