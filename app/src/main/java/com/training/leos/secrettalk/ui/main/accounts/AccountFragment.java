@@ -15,7 +15,6 @@ import android.widget.Toast;
 
 import com.training.leos.secrettalk.AccountContract;
 import com.training.leos.secrettalk.R;
-import com.training.leos.secrettalk.data.model.Account;
 import com.training.leos.secrettalk.data.model.Credential;
 import com.training.leos.secrettalk.presenter.AccountPresenter;
 import com.training.leos.secrettalk.ui.main.adapter.UserListView;
@@ -51,8 +50,13 @@ public class AccountFragment extends Fragment implements AccountContract.View {
         if (presenter == null){
             presenter = new AccountPresenter(this);
         }
-        presenter.onInitialize();
         return v;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        presenter.onInitialize();
     }
 
     public static final String TAG = AccountFragment.class.getSimpleName();

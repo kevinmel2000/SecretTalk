@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.training.leos.secrettalk.MainContract;
 import com.training.leos.secrettalk.R;
 import com.training.leos.secrettalk.presenter.MainPresenter;
+import com.training.leos.secrettalk.ui.allUsers.AllUsersActivity;
 import com.training.leos.secrettalk.ui.main.adapter.SectionsPagerAdapter;
 import com.training.leos.secrettalk.ui.signIn.SignInActivity;
 
@@ -37,7 +38,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
 
         ButterKnife.bind(this);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_main);
         setSupportActionBar(toolbar);
 
         sectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
@@ -60,6 +61,9 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case R.id.action_settings :
+                return true;
+            case R.id.action_all_users :
+                startActivity(new Intent(this, AllUsersActivity.class));
                 return true;
             case R.id.action_logout :
                 presenter.onSignOut();

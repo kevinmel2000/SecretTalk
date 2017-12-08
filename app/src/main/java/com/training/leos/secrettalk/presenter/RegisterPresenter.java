@@ -74,7 +74,7 @@ public class RegisterPresenter implements RegisterContract.Presenter {
                     public void onError(@NonNull Throwable e) {
                         view.hideProgressBar();
                         Log.w(TAG, "onError: " + e.getMessage());
-                        view.showToast("Account Creation Failed");
+                        view.showToast("User Creation Failed");
                     }
                 }));
     }

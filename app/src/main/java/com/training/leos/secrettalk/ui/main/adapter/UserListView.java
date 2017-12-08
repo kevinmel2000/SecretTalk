@@ -2,12 +2,14 @@ package com.training.leos.secrettalk.ui.main.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.training.leos.secrettalk.R;
 import com.training.leos.secrettalk.data.model.Credential;
 
@@ -21,6 +23,7 @@ public class UserListView extends RecyclerView.Adapter<UserListView.ViewHolder>{
 
     private ArrayList<Credential> credentials = new ArrayList<>();
     private LayoutInflater layoutInflater;
+    private Context context;
 
     public ArrayList<Credential> getCredentials() {
         return credentials;
@@ -32,6 +35,7 @@ public class UserListView extends RecyclerView.Adapter<UserListView.ViewHolder>{
     }
 
     public UserListView(Context context) {
+        this.context = context;
         this.layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
@@ -43,8 +47,10 @@ public class UserListView extends RecyclerView.Adapter<UserListView.ViewHolder>{
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        //use Glide/Picasso using url;
-        holder.cimgPhoto.setImageResource(R.drawable.ic_account_box_black);
+        Glide.with(context)
+                .asBitmap()
+                .load(credentials.get(position).getThumbImageUrl())
+                .into(holder.cimgPhoto);
         holder.tvName.setText(credentials.get(position).getName());
     }
 

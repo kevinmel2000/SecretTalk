@@ -2,18 +2,21 @@ package com.training.leos.secrettalk;
 
 import com.training.leos.secrettalk.data.model.Credential;
 
-import java.util.ArrayList;
+/**
+ * Created by Leo on 07/12/2017.
+ */
 
-public interface AccountContract {
+public interface ManageAccountContract {
     interface View extends BaseView<Presenter>{
-        void showMyAccount(Credential credential);
-        void showFriendsAccount(ArrayList<Credential> credentials);
-        void startDetailAccountFragment(String uid);
+        void inflateInformation(Credential data);
+        void finishActivity();
         void showProgressBar();
         void hideProgressBar();
+        String getDisplayName();
+        String getAbout();
     }
     interface Presenter extends BasePresenter{
         void onInitialize();
-        void onAccountClicked(String id);
+        void onSaveClicked();
     }
 }

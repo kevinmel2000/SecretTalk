@@ -39,7 +39,7 @@ public class RegisterActivity extends AppCompatActivity implements RegisterContr
 
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Create Account");
+        getSupportActionBar().setTitle("Create User");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         progressBar = new ProgressDialog(this);
@@ -70,7 +70,7 @@ public class RegisterActivity extends AppCompatActivity implements RegisterContr
 
     @Override
     public void showProgressBar() {
-        progressBar.setTitle("Creating Account");
+        progressBar.setTitle("Creating User");
         progressBar.setMessage("Please wait a moment!");
         progressBar.setCanceledOnTouchOutside(true);
         progressBar.show();

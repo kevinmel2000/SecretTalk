@@ -8,6 +8,11 @@
         android:title="@string/action_settings"
         app:showAsAction="never" />
     <item
+        android:id="@+id/action_all_users"
+        android:orderInCategory="100"
+        android:title="All Users"
+        app:showAsAction="never" />
+    <item
         android:id="@+id/action_logout"
         android:orderInCategory="100"
         android:title="Logout"
