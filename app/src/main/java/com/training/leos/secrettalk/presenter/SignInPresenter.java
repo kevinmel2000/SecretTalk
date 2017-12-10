@@ -1,10 +1,8 @@
 package com.training.leos.secrettalk.presenter;
 
-import android.util.Log;
-
 import com.training.leos.secrettalk.SignInContract;
 import com.training.leos.secrettalk.R;
-import com.training.leos.secrettalk.data.auth.FirebaseAuthentication;
+import com.training.leos.secrettalk.data.firebase.FirebaseAuthDataStore;
 import com.training.leos.secrettalk.data.model.Credential;
 import com.training.leos.secrettalk.ui.signIn.SignInActivity;
 
@@ -18,12 +16,12 @@ public class SignInPresenter implements SignInContract.Presenter {
     static final String TAG = SignInPresenter.class.getSimpleName();
     private SignInContract.View view = new SignInActivity();
     private CompositeDisposable compositeDisposable;
-    private FirebaseAuthentication authentication;
+    private FirebaseAuthDataStore authentication;
 
     public SignInPresenter(SignInContract.View view) {
         this.view = view;
         this.compositeDisposable = new CompositeDisposable();
-        this.authentication = FirebaseAuthentication.getInstance();
+        this.authentication = FirebaseAuthDataStore.getInstance();
     }
 
     @Override
@@ -34,7 +32,7 @@ public class SignInPresenter implements SignInContract.Presenter {
         if (email.isEmpty() || password.isEmpty()) {
             view.showToast(R.string.error_empty_input);
         }
-        if (!email.contains("@")) {
+        if (!email.isEmpty() && !email.contains("@")) {
             view.showToast(R.string.error_invalid_email);
         } else {
             view.showProgressBar();
@@ -45,7 +43,7 @@ public class SignInPresenter implements SignInContract.Presenter {
         }
     }
 
-    private void attemptSignIn(Credential credential) {
+    private void attemptSignIn(final Credential credential) {
         compositeDisposable.add(authentication.signIn(credential)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -59,8 +57,7 @@ public class SignInPresenter implements SignInContract.Presenter {
                     @Override
                     public void onError(@NonNull Throwable e) {
                         view.hideProgressBar();
-                        Log.w(TAG, "onError: " + e.getMessage());
-                        view.showToast("SignIn Failed");
+                        view.showToast(e.getMessage());
                     }
                 })
         );
@@ -68,7 +65,7 @@ public class SignInPresenter implements SignInContract.Presenter {
 
     @Override
     public void onAccountCreationButtonClicked() {
-        view.startAccountCreationAcitivty();
+        view.startRegisterActivity();
     }
 
     @Override

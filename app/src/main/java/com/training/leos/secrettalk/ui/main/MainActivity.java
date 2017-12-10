@@ -25,10 +25,10 @@ import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity implements MainContract.View{
     public static final String TAG = MainActivity.class.getSimpleName();
-    @BindView(R.id.container) ViewPager viewPager;
+    @BindView(R.id.vp_main_container) ViewPager viewPager;
     @BindView(R.id.tabs) TabLayout tabLayout;
+    @BindView(R.id.toolbar_app) Toolbar toolbar;
 
-    private SectionsPagerAdapter sectionsPagerAdapter;
     private MainContract.Presenter presenter;
 
     @Override
@@ -37,17 +37,17 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         setContentView(R.layout.activity_main);
 
         ButterKnife.bind(this);
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_main);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle(R.string.toolbar_main_title_text);
 
-        sectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
-        viewPager.setAdapter(sectionsPagerAdapter);
-        tabLayout.setupWithViewPager(viewPager);
-
+        SectionsPagerAdapter sectionsPagerAdapter =
+                new SectionsPagerAdapter(getSupportFragmentManager());
         if (presenter == null){
             presenter = new MainPresenter(this);
         }
+
+        viewPager.setAdapter(sectionsPagerAdapter);
+        tabLayout.setupWithViewPager(viewPager);
         presenter.onCheckActiveUser();
     }
 
@@ -73,22 +73,28 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     }
 
     @Override
-    public void setConfirmationDialog(String message) {
-        Snackbar.make(viewPager,
-                message,
-                Snackbar.LENGTH_LONG
-        ).setAction("Logout", new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                presenter.onSignOutConfirmed();
-            }
-        }).show();
+    protected void onDestroy() {
+        super.onDestroy();
+        presenter.unsubscribe();
     }
 
     @Override
     public void startLoginActivity() {
         startActivity(new Intent(this, SignInActivity.class));
         finish();
+    }
+
+    @Override
+    public void setConfirmationDialog(String message) {
+        Snackbar.make(viewPager,
+                message,
+                Snackbar.LENGTH_LONG
+        ).setAction(R.string.sign_out_text, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                presenter.onSignOutConfirmed();
+            }
+        }).show();
     }
 
     @Override

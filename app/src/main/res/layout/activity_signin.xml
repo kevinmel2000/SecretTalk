@@ -3,8 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="@dimen/size_16dp"
     android:background="@color/primary_dark"
+    android:padding="@dimen/size_16dp"
     tools:context="com.training.leos.secrettalk.ui.signIn.SignInActivity">
 
     <include
@@ -24,27 +24,29 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="@dimen/size_8dp">
+
             <AutoCompleteTextView
                 android:id="@+id/actv_login_actv_email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:hint="@string/input_email_hint"
                 android:inputType="textEmailAddress"
-                android:hint="Email"
                 android:maxLines="1" />
         </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingBottom="@dimen/_8sdp"
             android:paddingLeft="@dimen/_8sdp"
-            android:paddingRight="@dimen/_8sdp"
-            android:paddingBottom="@dimen/_8sdp">
+            android:paddingRight="@dimen/_8sdp">
+
             <EditText
                 android:id="@+id/actv_login_act_password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:hint="@string/input_password_hint"
                 android:inputType="textPassword"
-                android:hint="Password"
                 android:maxLines="1" />
         </android.support.design.widget.TextInputLayout>
 
@@ -55,19 +57,19 @@
             android:backgroundTint="@color/primary_light"
             android:fontFamily="sans-serif-smallcaps"
             android:padding="@dimen/_8sdp"
-            android:text="Sign In" />
+            android:text="@string/button_sign_in_text" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="@dimen/_8sdp"
             android:gravity="center"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:padding="@dimen/_8sdp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Don't have an account? Sign Up "
+                android:text="@string/dont_have_account_text"
                 android:textAlignment="center"
                 android:textColor="@color/color_white" />
 
@@ -76,9 +78,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:clickable="true"
-                android:text="here"
-                android:textColor="@color/primary_light"
-                android:textSize="14sp" />
+                android:paddingLeft="3dp"
+                android:text="@string/button_here_text"
+                android:textColor="@color/color_white"
+                android:textSize="14sp"
+                android:textStyle="bold" />
         </LinearLayout>
     </LinearLayout>
 </RelativeLayout>

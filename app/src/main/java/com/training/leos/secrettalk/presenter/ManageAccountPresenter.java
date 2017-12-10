@@ -1,8 +1,7 @@
 package com.training.leos.secrettalk.presenter;
 
 import com.training.leos.secrettalk.ManageAccountContract;
-import com.training.leos.secrettalk.RegisterContract;
-import com.training.leos.secrettalk.data.auth.FirebaseAuthentication;
+import com.training.leos.secrettalk.data.firebase.FirebaseAuthDataStore;
 import com.training.leos.secrettalk.data.model.Credential;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -13,14 +12,13 @@ import io.reactivex.observers.DisposableMaybeObserver;
 import io.reactivex.schedulers.Schedulers;
 
 public class ManageAccountPresenter implements ManageAccountContract.Presenter {
-    public static final String TAG = RegisterPresenter.class.getSimpleName();
     private ManageAccountContract.View view;
-    private FirebaseAuthentication authentication;
     private CompositeDisposable compositeDisposable;
+    private FirebaseAuthDataStore authentication;
 
     public ManageAccountPresenter(ManageAccountContract.View view) {
         this.view = view;
-        this.authentication = FirebaseAuthentication.getInstance();
+        this.authentication = FirebaseAuthDataStore.getInstance();
         this.compositeDisposable = new CompositeDisposable();
     }
 
@@ -35,8 +33,8 @@ public class ManageAccountPresenter implements ManageAccountContract.Presenter {
     }
 
     @Override
-    public void onInitialize() {
-        compositeDisposable.add(authentication.getCurrentUserCredential()
+    public void onInitialize(String uId) {
+        compositeDisposable.add(authentication.getUserCredential(uId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(new DisposableMaybeObserver<Credential>() {
@@ -61,7 +59,6 @@ public class ManageAccountPresenter implements ManageAccountContract.Presenter {
     @Override
     public void onSaveClicked() {
         view.showProgressBar();
-
         Credential credential = new Credential();
         credential.setName(view.getDisplayName());
         credential.setAbout(view.getAbout());
@@ -72,8 +69,6 @@ public class ManageAccountPresenter implements ManageAccountContract.Presenter {
                 .subscribeWith(new DisposableCompletableObserver() {
                     @Override
                     public void onComplete() {
-                        
-
                         view.hideProgressBar();
                         view.finishActivity();
                     }

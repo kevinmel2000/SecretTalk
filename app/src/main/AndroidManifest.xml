@@ -28,16 +28,20 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Login" />
         <activity
-            android:name=".ui.register.RegisterActivity"
+            android:name=".ui.register.RegistrationActivity"
             android:parentActivityName=".ui.signIn.SignInActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Register" />
         <activity android:name=".ui.chat.ChatActivity" />
-        <activity android:name=".ui.manageAccount.ManageAccountActivity" />
+        <activity
+            android:name=".ui.manageAccount.ManageAccountActivity"
+            android:parentActivityName=".ui.main.MainActivity" />
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
             android:theme="@style/Base.Theme.AppCompat" />
-        <activity android:name=".ui.allUsers.AllUsersActivity"></activity>
+        <activity
+            android:name=".ui.allUsers.AllUsersActivity"
+            android:parentActivityName=".ui.main.MainActivity"></activity>
     </application>
 
 </manifest>

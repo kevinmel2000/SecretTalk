@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.support.annotation.StringRes;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -18,13 +19,11 @@ import com.training.leos.secrettalk.presenter.ManageAccountPresenter;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class ManageAccountActivity extends AppCompatActivity implements ManageAccountContract.View{
-    @BindView(R.id.btn_manage_save)
-    Button btnSave;
-    @BindView(R.id.edt_manage_display_name)
-    EditText edtName;
-    @BindView(R.id.edt_manage_about)
-    EditText edtAbout;
+public class ManageAccountActivity extends AppCompatActivity implements ManageAccountContract.View, View.OnClickListener{
+    @BindView(R.id.btn_manage_save) Button btnSave;
+    @BindView(R.id.edt_manage_display_name) EditText edtName;
+    @BindView(R.id.edt_manage_about) EditText edtAbout;
+    @BindView(R.id.toolbar_app) Toolbar toolbar;
 
     private ProgressDialog progressBar;
     private ManageAccountContract.Presenter presenter;
@@ -32,22 +31,34 @@ public class ManageAccountActivity extends AppCompatActivity implements ManageAc
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manage_account);
+
         ButterKnife.bind(this);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle(R.string.toolbar_title_manage_account_text);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
 
         progressBar = new ProgressDialog(this);
-
-        btnSave.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                presenter.onSaveClicked();
-            }
-        });
-
         if (presenter == null){
             presenter = new ManageAccountPresenter(this);
         }
-        presenter.onInitialize();
 
+        btnSave.setOnClickListener(this);
+
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        presenter.onInitialize(getIntent().getStringExtra("userId"));
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (v.getId() == R.id.btn_manage_save) {
+            presenter.onSaveClicked();
+        }
     }
 
     @Override
@@ -73,7 +84,7 @@ public class ManageAccountActivity extends AppCompatActivity implements ManageAc
 
     @Override
     public void showProgressBar() {
-        progressBar.setTitle("Creating User");
+        progressBar.setTitle("Saving Information");
         progressBar.setMessage("Please wait a moment!");
         progressBar.setCanceledOnTouchOutside(true);
         progressBar.show();

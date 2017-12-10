@@ -4,7 +4,7 @@ import android.support.annotation.StringRes;
 
 public interface SignInContract {
     interface View extends BaseView<Presenter>{
-        void startAccountCreationAcitivty();
+        void startRegisterActivity();
         void startMainActivity();
         void showProgressBar();
         void hideProgressBar();

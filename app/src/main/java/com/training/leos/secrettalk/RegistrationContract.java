@@ -1,6 +1,6 @@
 package com.training.leos.secrettalk;
 
-public interface RegisterContract {
+public interface RegistrationContract {
     interface View extends BaseView<Presenter>{
         void startMainActivity();
         void showProgressBar();
@@ -11,6 +11,6 @@ public interface RegisterContract {
         boolean isCheckBoxTermChecked();
     }
     interface Presenter extends BasePresenter{
-        void onAccountCreation();
+        void onRegistering();
     }
 }

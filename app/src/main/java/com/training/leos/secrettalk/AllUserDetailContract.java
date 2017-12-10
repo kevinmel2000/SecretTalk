@@ -1,23 +1,21 @@
 package com.training.leos.secrettalk;
 
-import android.net.Uri;
 
 import com.training.leos.secrettalk.data.model.Credential;
 
-public interface AccountDetailContract {
+public interface AllUserDetailContract {
     interface View extends BaseView<Presenter>{
         void showAccountInformation(Credential data);
-        void startEditAccountActivity();
-        void openImageApp();
+        void inflateUserStateView(String desc, String state, String tag);
+        void disableUserStateView();
+        void enableUserStateView();
         void showProgressBar();
         void hideProgressBar();
         void reloadInformation();
     }
     interface Presenter extends BasePresenter{
         void onInitialize(String id);
-        void onEditAccountClicked();
-        void onThumbClicked();
-        void onSaveImage(Uri resultUri);
-        void onSaveThumbImage(byte[] thumb_byte);
+        void onCheckUserFriendState(String uId);
+        void onRequestClicked(String uId, String tag);
     }
 }

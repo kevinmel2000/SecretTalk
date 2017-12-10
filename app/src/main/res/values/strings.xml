@@ -23,4 +23,24 @@
     <string name="error_empty_input">Input may not empty!</string>
     <string name="error_term_agreement">You cant register if agreement is not accepted</string>
     <string name="error_account_creation_failed">Failed to create account</string>
+    <string name="input_email_hint">Email</string>
+    <string name="input_password_hint">Password</string>
+    <string name="button_sign_in_text">Sign In</string>
+    <string name="dont_have_account_text">Don\'t have an account? Sign Up</string>
+    <string name="button_here_text">here</string>
+    <string name="create_account_header_text">Create Your Account :</string>
+    <string name="input_name_hint">Name</string>
+    <string name="terms_and_issue_text">Accept issue and terms</string>
+    <string name="button_create_account_text">Create Account</string>
+    <string name="toolbar_registration_title_text">Create User</string>
+    <string name="default_text">default</string>
+    <string name="error_password_too_short">Password is to short!</string>
+    <string name="toolbar_main_title_text">Secret Talk</string>
+    <string name="sign_out_text">Sign Out</string>
+    <string name="manage_your_account_text">Manage Your Account</string>
+    <string name="display_name_text">Display Name</string>
+    <string name="tell_more_about_you_text">Tell more about you</string>
+    <string name="button_save_change_text">Save Change</string>
+    <string name="toolbar_title_manage_account_text">Manage Account</string>
+    <string name="my_profile_text">My Profile</string>
 </resources>

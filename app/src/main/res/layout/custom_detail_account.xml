@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/color_white"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/size_48dp">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/cimg_account_detail_thumb"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:clickable="true" />
+
+    <TextView
+        android:id="@+id/tv_account_detail_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/size_8dp"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        tools:text="Leo Suganda" />
+
+    <TextView
+        android:id="@+id/tv_account_detail_email"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/size_8dp"
+        tools:text="Email : leosuganda1994" />
+
+    <TextView
+        android:id="@+id/tv_account_detail_about_me"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:lines="4"
+        android:maxEms="15"
+        android:maxLength="250"
+        android:maxLines="4"
+        android:padding="@dimen/_8sdp"
+        android:textAlignment="center"
+        tools:text="About me \n Feel the wrath of heaven that tore down the life of the one who againts the heaven" />
+</LinearLayout>

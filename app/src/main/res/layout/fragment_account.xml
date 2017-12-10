@@ -1,5 +1,4 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -8,7 +7,6 @@
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -16,30 +14,23 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:padding="@dimen/size_4dp">
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true"
-                    android:text="My Profile"
+                    android:text="@string/my_profile_text"
                     android:textStyle="italic" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:clickable="true"
-                    android:text="^" />
             </RelativeLayout>
+
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/rv_my_account"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
-            </android.support.v7.widget.RecyclerView>
-
+                android:orientation="vertical" />
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
 </FrameLayout>

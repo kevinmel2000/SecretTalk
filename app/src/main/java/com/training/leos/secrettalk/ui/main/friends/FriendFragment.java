@@ -13,8 +13,6 @@ import com.training.leos.secrettalk.R;
  * A simple {@link Fragment} subclass.
  */
 public class FriendFragment extends Fragment {
-
-
     public FriendFragment() {
         // Required empty public constructor
     }

@@ -1,9 +1,5 @@
 package com.training.leos.secrettalk.data.model;
 
-/**
- * Created by Leo on 04/12/2017.
- */
-
 public class Credential {
     private String id;
     private String name;
@@ -14,6 +10,16 @@ public class Credential {
     private String thumbImageUrl;
 
     public Credential()  {
+    }
+
+    public Credential(String id, String name, String email, String password, String about, String imageUrl, String thumbImageUrl) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.about = about;
+        this.imageUrl = imageUrl;
+        this.thumbImageUrl = thumbImageUrl;
     }
 
     public String getId() {

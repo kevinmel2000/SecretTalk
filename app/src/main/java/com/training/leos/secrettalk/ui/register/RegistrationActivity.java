@@ -13,51 +13,54 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.training.leos.secrettalk.RegisterContract;
+import com.training.leos.secrettalk.RegistrationContract;
 import com.training.leos.secrettalk.R;
-import com.training.leos.secrettalk.presenter.RegisterPresenter;
+import com.training.leos.secrettalk.presenter.RegistrationPresenter;
 import com.training.leos.secrettalk.ui.main.MainActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class RegisterActivity extends AppCompatActivity implements RegisterContract.View{
+public class RegistrationActivity extends AppCompatActivity implements RegistrationContract.View, View.OnClickListener{
     @BindView(R.id.edt_regist_act_display_name) EditText edtName;
     @BindView(R.id.edt_regist_act_email) EditText edtEmail;
     @BindView(R.id.edt_regist_act_password) EditText edtPassword;
     @BindView(R.id.cb_regist_act_term_checkbox) CheckBox cbTerms;
     @BindView(R.id.btn_regist_act_create_account) Button btnCreateAccount;
-    @BindView(R.id.toolbar_account_creation) Toolbar toolbar;
+    @BindView(R.id.toolbar_app) Toolbar toolbar;
     private ProgressDialog progressBar;
 
-    private RegisterContract.Presenter presenter;
+    private RegistrationContract.Presenter presenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_account_creation);
+        setContentView(R.layout.activity_registration);
 
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Create User");
+        getSupportActionBar().setTitle(R.string.toolbar_registration_title_text);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         progressBar = new ProgressDialog(this);
+        if (presenter == null){
+            presenter = new RegistrationPresenter(this);
+        }
 
-        btnCreateAccount.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                presenter.onAccountCreation();
-            }
-        });
+        btnCreateAccount.setOnClickListener(this);
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        if (presenter == null){
-            presenter = new RegisterPresenter(this);
+    public void onClick(View v) {
+        if (v.getId() == R.id.btn_regist_act_create_account){
+            presenter.onRegistering();
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        presenter.unsubscribe();
     }
 
     @Override
@@ -66,6 +69,14 @@ public class RegisterActivity extends AppCompatActivity implements RegisterContr
             finish();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void startMainActivity() {
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        finish();
     }
 
     @Override
@@ -79,14 +90,6 @@ public class RegisterActivity extends AppCompatActivity implements RegisterContr
     @Override
     public void hideProgressBar() {
         progressBar.dismiss();
-    }
-
-    @Override
-    public void startMainActivity() {
-        Intent intent = new Intent(this, MainActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(intent);
-        finish();
     }
 
     @Override

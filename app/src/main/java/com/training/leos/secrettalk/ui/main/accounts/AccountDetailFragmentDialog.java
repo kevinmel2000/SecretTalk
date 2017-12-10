@@ -15,7 +15,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
+import com.squareup.picasso.Picasso;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.training.leos.secrettalk.AccountDetailContract;
 import com.training.leos.secrettalk.R;
@@ -34,7 +34,7 @@ import id.zelory.compressor.Compressor;
 
 import static android.app.Activity.RESULT_OK;
 
-public class AccountDetailFragmentDialog extends DialogFragment implements AccountDetailContract.View {
+public class AccountDetailFragmentDialog extends DialogFragment implements AccountDetailContract.View, View.OnClickListener {
     public static final int IMAGE_PICK = 11;
     public static final String TAG = AccountDetailFragmentDialog.class.getSimpleName();
 
@@ -55,28 +55,26 @@ public class AccountDetailFragmentDialog extends DialogFragment implements Accou
                 false);
         ButterKnife.bind(this, v);
         progressBar = new ProgressDialog(getActivity());
-        btnEdit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                presenter.onEditAccountClicked();
-            }
-        });
-        cimgThumbImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                presenter.onThumbClicked();
-            }
-        });
         if (presenter == null) {
             presenter = new AccountDetailPresenter(this);
         }
+
+        btnEdit.setOnClickListener(this);
+        cimgThumbImage.setOnClickListener(this);
+
         return v;
     }
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        Log.w("Akun Detail", "onActivityCreated: " + getArguments().getString("userId"));
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.cimg_account_detail_thumb :
+                presenter.onThumbClicked();
+                break;
+            case R.id.btn_account_detail_edit :
+                presenter.onEditAccountClicked();
+                break;
+        }
     }
 
     @Override
@@ -89,12 +87,13 @@ public class AccountDetailFragmentDialog extends DialogFragment implements Accou
     public void showAccountInformation(Credential data) {
         String thumbImageUrl = data.getThumbImageUrl();
         if (thumbImageUrl != "default"){
-            Glide.with(this)
-                    .asBitmap()
-                    .load(data.getImageUrl())
+            Picasso.with(getContext())
+                    .load(data.getThumbImageUrl())
+                    .placeholder(R.mipmap.ic_launcher_round)
                     .into(cimgThumbImage);
+        }else {
+            cimgThumbImage.setImageResource(R.mipmap.ic_launcher_round);
         }
-
         tvName.setText(data.getName());
         tvEmail.setText(data.getEmail());
         tvAbout.setText(data.getAbout());
@@ -103,6 +102,7 @@ public class AccountDetailFragmentDialog extends DialogFragment implements Accou
     @Override
     public void startEditAccountActivity() {
         Intent intent = new Intent(getActivity(), ManageAccountActivity.class);
+        intent.putExtra("userId", getArguments().getString("userId"));
         startActivity(intent);
     }
 
@@ -114,8 +114,6 @@ public class AccountDetailFragmentDialog extends DialogFragment implements Accou
         startActivityForResult(Intent.createChooser(intent, "Select Image"), IMAGE_PICK);
     }
 
-
-    //i think this part really breaking my MVP architecture, o.o
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -128,25 +126,23 @@ public class AccountDetailFragmentDialog extends DialogFragment implements Accou
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
             if (resultCode == RESULT_OK) {
                 Uri resultUri = result.getUri();
-
                 File thumb_path = new File(resultUri.getPath());
-
                 try {
                     Bitmap thumb_bitmap = new Compressor(getContext())
-                            .setMaxHeight(150)
-                            .setMaxWidth(150)
-                            .setQuality(50)
+                            .setMaxHeight(200)
+                            .setMaxWidth(200)
+                            .setQuality(75)
                             .compressToBitmap(thumb_path);
-
                     ByteArrayOutputStream baos = new ByteArrayOutputStream();
                     thumb_bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
                     byte[] thumb_byte = baos.toByteArray();
 
                     presenter.onSaveThumbImage(thumb_byte);
+                    presenter.onSaveImage(resultUri);
+
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                presenter.onSaveImage(resultUri);
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 showToast(result.getError().toString());
             }
@@ -154,7 +150,14 @@ public class AccountDetailFragmentDialog extends DialogFragment implements Accou
     }
 
     @Override
+    public void reloadInformation() {
+        onResume();
+    }
+
+    @Override
     public void showProgressBar() {
+        progressBar.setTitle("Uploading The Image");
+        progressBar.setMessage("Please wait a moment");
         progressBar.setCanceledOnTouchOutside(true);
         progressBar.show();
     }

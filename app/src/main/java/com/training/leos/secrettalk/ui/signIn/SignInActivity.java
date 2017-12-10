@@ -15,50 +15,45 @@ import android.widget.Toast;
 import com.training.leos.secrettalk.SignInContract;
 import com.training.leos.secrettalk.R;
 import com.training.leos.secrettalk.presenter.SignInPresenter;
-import com.training.leos.secrettalk.ui.register.RegisterActivity;
+import com.training.leos.secrettalk.ui.register.RegistrationActivity;
 import com.training.leos.secrettalk.ui.main.MainActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class SignInActivity extends AppCompatActivity implements SignInContract.View {
+public class SignInActivity extends AppCompatActivity implements SignInContract.View, View.OnClickListener {
     @BindView(R.id.actv_login_actv_email) AutoCompleteTextView actvEmail;
     @BindView(R.id.actv_login_act_password) EditText actvPassword;
     @BindView(R.id.btn_login_act_signin) Button btnSignIn;
     @BindView(R.id.tv_btn_sign_up) TextView tvBtnSignUp;
 
     private ProgressDialog progressBar;
-
     SignInContract.Presenter loginPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.activity_signin);
 
         ButterKnife.bind(this);
-
         progressBar = new ProgressDialog(this);
+        if (loginPresenter == null){
+            loginPresenter = new SignInPresenter(this);
+        }
 
-        btnSignIn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-            loginPresenter.onSignIn();
-            }
-        });
-        tvBtnSignUp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                loginPresenter.onAccountCreationButtonClicked();
-            }
-        });
+        btnSignIn.setOnClickListener(this);
+        tvBtnSignUp.setOnClickListener(this);
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        if (loginPresenter == null){
-            loginPresenter = new SignInPresenter(this);
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.btn_login_act_signin :
+                loginPresenter.onSignIn();
+                break;
+            case R.id.tv_btn_sign_up :
+                loginPresenter.onAccountCreationButtonClicked();
+                break;
         }
     }
 
@@ -67,9 +62,10 @@ public class SignInActivity extends AppCompatActivity implements SignInContract.
         super.onDestroy();
         loginPresenter.unsubscribe();
     }
+
     @Override
-    public void startAccountCreationAcitivty() {
-        startActivity(new Intent(this, RegisterActivity.class));
+    public void startRegisterActivity() {
+        startActivity(new Intent(this, RegistrationActivity.class));
     }
 
     @Override

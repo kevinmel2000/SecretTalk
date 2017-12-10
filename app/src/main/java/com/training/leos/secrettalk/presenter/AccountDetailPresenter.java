@@ -1,29 +1,27 @@
 package com.training.leos.secrettalk.presenter;
 
 import android.net.Uri;
-import android.util.Log;
 
 import com.training.leos.secrettalk.AccountDetailContract;
-import com.training.leos.secrettalk.data.auth.FirebaseAuthentication;
+import com.training.leos.secrettalk.data.firebase.FirebaseAuthDataStore;
 import com.training.leos.secrettalk.data.model.Credential;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.disposables.Disposable;
 import io.reactivex.observers.DisposableCompletableObserver;
 import io.reactivex.observers.DisposableMaybeObserver;
 import io.reactivex.schedulers.Schedulers;
 
 public class AccountDetailPresenter implements AccountDetailContract.Presenter{
     private AccountDetailContract.View view;
-    private FirebaseAuthentication authentication;
     private CompositeDisposable compositeDisposable;
+    private FirebaseAuthDataStore authentication;
 
     public AccountDetailPresenter(AccountDetailContract.View view) {
         this.view = view;
-        this.authentication = FirebaseAuthentication.getInstance();
         this.compositeDisposable = new CompositeDisposable();
+        this.authentication = FirebaseAuthDataStore.getInstance();
     }
 
     @Override
@@ -98,8 +96,7 @@ public class AccountDetailPresenter implements AccountDetailContract.Presenter{
                     @Override
                     public void onComplete() {
                         view.hideProgressBar();
-                        view.showToast("Save Succeeds");
-                        //a method to get the data
+                        view.reloadInformation();
                     }
 
                     @Override

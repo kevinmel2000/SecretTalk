@@ -16,7 +16,7 @@ public interface ManageAccountContract {
         String getAbout();
     }
     interface Presenter extends BasePresenter{
-        void onInitialize();
+        void onInitialize(String userId);
         void onSaveClicked();
     }
 }

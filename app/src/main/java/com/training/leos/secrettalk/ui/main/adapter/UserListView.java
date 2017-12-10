@@ -2,14 +2,12 @@ package com.training.leos.secrettalk.ui.main.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
+import com.squareup.picasso.Picasso;
 import com.training.leos.secrettalk.R;
 import com.training.leos.secrettalk.data.model.Credential;
 
@@ -47,11 +45,18 @@ public class UserListView extends RecyclerView.Adapter<UserListView.ViewHolder>{
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        Glide.with(context)
-                .asBitmap()
-                .load(credentials.get(position).getThumbImageUrl())
-                .into(holder.cimgPhoto);
-        holder.tvName.setText(credentials.get(position).getName());
+        Credential data = credentials.get(position);
+
+        if (data.getThumbImageUrl() == "default"){
+            holder.cimgPhoto.setImageResource(R.mipmap.ic_launcher_round);
+        } else {
+            Picasso.with(context)
+                    .load(data.getThumbImageUrl())
+                    .placeholder(R.mipmap.ic_launcher_round)
+                    .into(holder.cimgPhoto);
+        }
+        holder.tvName.setText(data.getName());
+        holder.tvAbout.setText(data.getAbout());
     }
 
     @Override
@@ -60,10 +65,10 @@ public class UserListView extends RecyclerView.Adapter<UserListView.ViewHolder>{
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.cimg_item_account_photo)
-        CircleImageView cimgPhoto;
-        @BindView(R.id.tv_item_account_name)
-        TextView tvName;
+        @BindView(R.id.cimg_item_account_photo) CircleImageView cimgPhoto;
+        @BindView(R.id.tv_item_account_name) TextView tvName;
+        @BindView(R.id.tv_item_account_about) TextView tvAbout;
+
 
         public ViewHolder(View itemView) {
             super(itemView);
