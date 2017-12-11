@@ -22,6 +22,17 @@ public interface FirebaseContract {
 
     Maybe<ArrayList<Credential>> getAllUsers();
 
+    //onProgress
+    Maybe<String> getUserFriendRequestState(String uId);
+
+    Completable sendFriendRequest(String uId);
+
+    Completable cancelFriendRequest(String uId);
+
+    Completable acceptedFriendRequest(String uId);
+
+    Completable deleteFriend(String uId);
+
     Completable saveImageToStorage(Uri resultUri);
     Completable saveThumbImageToStorage(byte[] bytes);
 

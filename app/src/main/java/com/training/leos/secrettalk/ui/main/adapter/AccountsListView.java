@@ -17,7 +17,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class UserListView extends RecyclerView.Adapter<UserListView.ViewHolder>{
+public class AccountsListView extends RecyclerView.Adapter<AccountsListView.ViewHolder>{
 
     private ArrayList<Credential> credentials = new ArrayList<>();
     private LayoutInflater layoutInflater;
@@ -32,7 +32,7 @@ public class UserListView extends RecyclerView.Adapter<UserListView.ViewHolder>{
         notifyDataSetChanged();
     }
 
-    public UserListView(Context context) {
+    public AccountsListView(Context context) {
         this.context = context;
         this.layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }

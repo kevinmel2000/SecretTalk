@@ -16,7 +16,7 @@ import android.widget.Toast;
 import com.training.leos.secrettalk.MainContract;
 import com.training.leos.secrettalk.R;
 import com.training.leos.secrettalk.presenter.MainPresenter;
-import com.training.leos.secrettalk.ui.allUsers.AllUsersActivity;
+import com.training.leos.secrettalk.ui.allAccount.AllAccountActivity;
 import com.training.leos.secrettalk.ui.main.adapter.SectionsPagerAdapter;
 import com.training.leos.secrettalk.ui.signIn.SignInActivity;
 
@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
             case R.id.action_settings :
                 return true;
             case R.id.action_all_users :
-                startActivity(new Intent(this, AllUsersActivity.class));
+                startActivity(new Intent(this, AllAccountActivity.class));
                 return true;
             case R.id.action_logout :
                 presenter.onSignOut();

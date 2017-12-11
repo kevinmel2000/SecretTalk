@@ -1,4 +1,4 @@
-package com.training.leos.secrettalk.ui.allUsers;
+package com.training.leos.secrettalk.ui.allAccount;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
@@ -7,23 +7,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.training.leos.secrettalk.AllUserContract;
-import com.training.leos.secrettalk.AllUserDetailContract;
 import com.training.leos.secrettalk.R;
 import com.training.leos.secrettalk.data.model.Credential;
-import com.training.leos.secrettalk.presenter.AllUserPresenter;
-import com.training.leos.secrettalk.ui.main.accounts.AccountDetailFragmentDialog;
-import com.training.leos.secrettalk.ui.main.adapter.UserListView;
+import com.training.leos.secrettalk.presenter.AllAccountPresenter;
+import com.training.leos.secrettalk.ui.main.adapter.AccountsListView;
 import com.training.leos.secrettalk.util.ItemClickContract;
 import com.training.leos.secrettalk.util.ItemClickSupport;
 
@@ -32,14 +24,14 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class AllUsersActivity extends AppCompatActivity implements AllUserContract.View{
+public class AllAccountActivity extends AppCompatActivity implements AllUserContract.View{
     @BindView(R.id.rv_all_users) RecyclerView rvAllUsers;
     @BindView(R.id.toolbar_app) Toolbar toolbar;
 
     private ProgressDialog progressBar;
 
     private AllUserContract.Presenter presenter;
-    private UserListView userListView;
+    private AccountsListView accountsListView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,14 +44,14 @@ public class AllUsersActivity extends AppCompatActivity implements AllUserContra
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         progressBar = new ProgressDialog(this);
-        userListView = new UserListView(this);
+        accountsListView = new AccountsListView(this);
         if (presenter == null){
-            presenter = new AllUserPresenter(this);
+            presenter = new AllAccountPresenter(this);
         }
 
         rvAllUsers.setLayoutManager(new LinearLayoutManager(this));
         rvAllUsers.setHasFixedSize(true);
-        rvAllUsers.setAdapter(userListView);
+        rvAllUsers.setAdapter(accountsListView);
 
         presenter.onInitialize();
     }
@@ -74,7 +66,7 @@ public class AllUsersActivity extends AppCompatActivity implements AllUserContra
 
     @Override
     public void showAllUsers(final ArrayList<Credential> credentials) {
-        userListView.setCredentials(credentials);
+        accountsListView.setCredentials(credentials);
         ItemClickSupport.addTo(rvAllUsers).setOnItemClickListener(
                 new ItemClickContract.OnItemClickListener() {
                     @Override
@@ -90,12 +82,12 @@ public class AllUsersActivity extends AppCompatActivity implements AllUserContra
         Bundle args = new Bundle();
         args.putCharSequence("userId", uId);
 
-        AllUserDetailFragment detailFragment;
-        detailFragment = new AllUserDetailFragment();
+        AllAccountDetailFragmentDialog detailFragment;
+        detailFragment = new AllAccountDetailFragmentDialog();
         detailFragment.setArguments(args);
         detailFragment.show(
                 getSupportFragmentManager(),
-                AllUserDetailFragment.class.getSimpleName());
+                AllAccountDetailFragmentDialog.class.getSimpleName());
     }
 
     @Override

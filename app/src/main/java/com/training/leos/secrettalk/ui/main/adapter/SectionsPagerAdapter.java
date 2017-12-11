@@ -4,8 +4,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import com.training.leos.secrettalk.ui.main.accounts.AccountFragment;
-import com.training.leos.secrettalk.ui.main.friends.FriendFragment;
+import com.training.leos.secrettalk.ui.main.accounts.AccountsFragment;
+import com.training.leos.secrettalk.ui.main.friends.FriendsFragment;
 import com.training.leos.secrettalk.ui.main.posts.PostFragment;
 
 
@@ -20,9 +20,9 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
-                return new AccountFragment();
+                return new AccountsFragment();
             case 1:
-                return new FriendFragment();
+                return new FriendsFragment();
             case 2:
                 return new PostFragment();
         }

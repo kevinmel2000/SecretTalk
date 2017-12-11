@@ -1,4 +1,4 @@
-package com.training.leos.secrettalk.ui.allUsers;
+package com.training.leos.secrettalk.ui.allAccount;
 
 
 import android.app.ProgressDialog;
@@ -19,7 +19,7 @@ import com.squareup.picasso.Picasso;
 import com.training.leos.secrettalk.AllUserDetailContract;
 import com.training.leos.secrettalk.R;
 import com.training.leos.secrettalk.data.model.Credential;
-import com.training.leos.secrettalk.presenter.AllUserDetailPresenter;
+import com.training.leos.secrettalk.presenter.AllAccountDetailPresenter;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -28,7 +28,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class AllUserDetailFragment extends DialogFragment
+public class AllAccountDetailFragmentDialog extends DialogFragment
         implements AllUserDetailContract.View, View.OnClickListener{
     @BindView(R.id.cimg_account_detail_thumb) CircleImageView cimgThumbImage;
     @BindView(R.id.tv_account_detail_name) TextView tvName;
@@ -36,8 +36,9 @@ public class AllUserDetailFragment extends DialogFragment
     @BindView(R.id.tv_account_detail_about_me) TextView tvAbout;
     @BindView(R.id.tv_friend_request_description) TextView tvFriendReqDesc;
     @BindView(R.id.btn_account_detail_friend_request_state) Button btnRequestState;
+    @BindView(R.id.btn_account_detail_friend_decline_request) Button btnDeclineRequest;
 
-    public static final String TAG = AllUserDetailFragment.class.getName();
+    public static final String TAG = AllAccountDetailFragmentDialog.class.getName();
     private ProgressDialog progressBar;
     private AllUserDetailContract.Presenter presenter;
 
@@ -45,18 +46,19 @@ public class AllUserDetailFragment extends DialogFragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(
-                R.layout.fragment_dialog_all_user_detail,
+                R.layout.fragment_dialog_all_account_detail,
                 container,
                 false);
         ButterKnife.bind(this, v);
         progressBar = new ProgressDialog(getActivity());
         if (presenter == null) {
-            presenter = new AllUserDetailPresenter(this);
+            presenter = new AllAccountDetailPresenter(this);
         }
 
         btnRequestState.setOnClickListener(this);
-        presenter.onInitialize(getArguments().getString("userId"));
+        btnDeclineRequest.setOnClickListener(this);
         presenter.onCheckUserFriendState(getArguments().getString("userId"));
+        presenter.onInitialize(getArguments().getString("userId"));
         return v;
     }
 
@@ -67,6 +69,9 @@ public class AllUserDetailFragment extends DialogFragment
                 presenter.onRequestClicked(
                         getArguments().getString("userId"),
                         btnRequestState.getTag().toString());
+            case R.id.btn_account_detail_friend_decline_request:
+                presenter.onDeclineClicked(
+                        getArguments().getString("userId"));
         }
     }
 
@@ -89,11 +94,6 @@ public class AllUserDetailFragment extends DialogFragment
         tvName.setText(data.getName());
         tvEmail.setText(data.getEmail());
         tvAbout.setText(data.getAbout());
-    }
-
-    @Override
-    public void reloadInformation() {
-
     }
 
     @Override
@@ -127,6 +127,15 @@ public class AllUserDetailFragment extends DialogFragment
         progressBar.dismiss();
     }
 
+    @Override
+    public void showDeclineRequestButton() {
+        btnDeclineRequest.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideDeclineRequestButton() {
+        btnDeclineRequest.setVisibility(View.GONE);
+    }
 
     @Override
     public void showToast(String message) {

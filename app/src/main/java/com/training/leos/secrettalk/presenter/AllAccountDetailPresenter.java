@@ -1,5 +1,7 @@
 package com.training.leos.secrettalk.presenter;
 
+import android.util.Log;
+
 import com.training.leos.secrettalk.AllUserDetailContract;
 import com.training.leos.secrettalk.data.firebase.FirebaseAuthDataStore;
 import com.training.leos.secrettalk.data.model.Credential;
@@ -12,12 +14,12 @@ import io.reactivex.observers.DisposableCompletableObserver;
 import io.reactivex.observers.DisposableMaybeObserver;
 import io.reactivex.schedulers.Schedulers;
 
-public class AllUserDetailPresenter implements AllUserDetailContract.Presenter {
+public class AllAccountDetailPresenter implements AllUserDetailContract.Presenter {
     private AllUserDetailContract.View view;
     private CompositeDisposable compositeDisposable;
     private FirebaseAuthDataStore authentication;
 
-    public AllUserDetailPresenter(AllUserDetailContract.View view){
+    public AllAccountDetailPresenter(AllUserDetailContract.View view){
         this.view = view;
         this.authentication = FirebaseAuthDataStore.getInstance();
         this.compositeDisposable = new CompositeDisposable();
@@ -56,6 +58,7 @@ public class AllUserDetailPresenter implements AllUserDetailContract.Presenter {
                 }));
     }
 
+    public static final String TAG = AllAccountDetailPresenter.class.getSimpleName();
     @Override
     public void onCheckUserFriendState(String uId){
         compositeDisposable.add(authentication.getUserFriendRequestState(uId)
@@ -64,23 +67,33 @@ public class AllUserDetailPresenter implements AllUserDetailContract.Presenter {
                 .subscribeWith(new DisposableMaybeObserver<String>() {
                     @Override
                     public void onSuccess(@NonNull String s) {
-                        if (s.equals("friended")){
-                            view.inflateUserStateView(
-                                    "This person added as your friend :D",
-                                    "Remove Friend",
-                                    "friended");
-                        }
-                        else if (s.equals("sent")){
-                            view.inflateUserStateView(
-                                    "Request friend has sent to this person",
-                                    "Cancel Friend Request",
-                                    "sent");
-                        }
-                        else if (s.equals("notFriend")){
-                            view.inflateUserStateView(
-                                    "You are not friend with this person yet",
-                                    "Send Friend Request",
-                                    "notFriend");
+                        Log.w(TAG, "onSuccess: " + s);
+                        switch (s) {
+                            case "friended":
+                                view.inflateUserStateView(
+                                        "This person added as your friend :D",
+                                        "Remove Friend",
+                                        "friended");
+                                break;
+                            case "sent":
+                                view.inflateUserStateView(
+                                        "Request friend has sent to this person",
+                                        "Cancel Friend Request",
+                                        "sent");
+                                break;
+                            case "received":
+                                view.inflateUserStateView(
+                                        "You have friend request from this person",
+                                        "Accept Friend Request",
+                                        "received");
+                                view.showDeclineRequestButton();
+                                break;
+                            case "notFriend":
+                                view.inflateUserStateView(
+                                        "You are not friend with this person yet",
+                                        "Send Friend Request",
+                                        "notFriend");
+                                break;
                         }
                     }
                     @Override
@@ -100,12 +113,21 @@ public class AllUserDetailPresenter implements AllUserDetailContract.Presenter {
         view.disableUserStateView();
         Completable completable = null;
 
-        if (tag.equals("notFriend")){
-            completable = authentication.sendFriendRequest(uId);
-        }else if (tag.equals("sent")){
-            completable = authentication.cancelFriendRequest(uId);
-        }else if (tag.equals("friended")){
-            completable = authentication.deleteFriend(uId);
+        switch (tag) {
+            case "notFriend":
+                completable = authentication.sendFriendRequest(uId);
+                break;
+            case "sent":
+                completable = authentication.cancelFriendRequest(uId);
+                break;
+            case "received" :
+                completable = authentication.acceptedFriendRequest(uId);
+                break;
+            case "friended":
+                completable = authentication.deleteFriend(uId);
+                break;
+            default :
+                break;
         }
 
         compositeDisposable.add(completable
@@ -123,5 +145,27 @@ public class AllUserDetailPresenter implements AllUserDetailContract.Presenter {
                         view.enableUserStateView();
                     }
                 }));
+    }
+
+    @Override
+    public void onDeclineClicked(final String uId) {
+        view.disableUserStateView();
+        compositeDisposable.add(authentication.cancelFriendRequest(uId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(new DisposableCompletableObserver() {
+                    @Override
+                    public void onComplete() {
+                        view.enableUserStateView();
+                        view.hideDeclineRequestButton();
+                        onCheckUserFriendState(uId);
+                    }
+
+                    @Override
+                    public void onError(@NonNull Throwable e) {
+                        view.enableUserStateView();
+                    }
+                })
+        );
     }
 }

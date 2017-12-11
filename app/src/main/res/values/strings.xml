@@ -43,4 +43,6 @@
     <string name="button_save_change_text">Save Change</string>
     <string name="toolbar_title_manage_account_text">Manage Account</string>
     <string name="my_profile_text">My Profile</string>
+    <string name="my_received_friend_request_text">Friend request received</string>
+    <string name="my_friends_text">Friends</string>
 </resources>

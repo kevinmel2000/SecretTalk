@@ -11,11 +11,14 @@ public interface AllUserDetailContract {
         void enableUserStateView();
         void showProgressBar();
         void hideProgressBar();
-        void reloadInformation();
+        void showDeclineRequestButton();
+
+        void hideDeclineRequestButton();
     }
     interface Presenter extends BasePresenter{
         void onInitialize(String id);
         void onCheckUserFriendState(String uId);
         void onRequestClicked(String uId, String tag);
+        void onDeclineClicked(String userId);
     }
 }

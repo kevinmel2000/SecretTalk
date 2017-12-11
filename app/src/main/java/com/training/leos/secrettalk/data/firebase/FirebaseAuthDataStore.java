@@ -18,6 +18,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.training.leos.secrettalk.data.model.Credential;
+import com.training.leos.secrettalk.util.DateProvider;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -226,17 +227,17 @@ public class FirebaseAuthDataStore implements FirebaseContract {
         });
     }
 
-
-    //onProgress
+    @Override
     public Maybe<String> getUserFriendRequestState(final String uId) {
         return Maybe.create(new MaybeOnSubscribe<String>() {
             @Override
             public void subscribe(@NonNull final MaybeEmitter<String> e) throws Exception {
+                final String currentUserId = getCurrentUserId();
                 final DatabaseReference reference = FirebaseDatabase.getInstance()
                         .getReference();
                 DatabaseReference friendsDataReference = reference
                         .child("FriendsData")
-                        .child(getCurrentUserId())
+                        .child(currentUserId)
                         .child(uId);
                 friendsDataReference.addValueEventListener(new ValueEventListener() {
                     @Override
@@ -247,15 +248,20 @@ public class FirebaseAuthDataStore implements FirebaseContract {
                         } else {
                             DatabaseReference friendRequestReference = reference
                                     .child("FriendRequest")
-                                    .child(getCurrentUserId())
+                                    .child(currentUserId)
                                     .child(uId)
                                     .child("requestType");
                             friendRequestReference.addValueEventListener(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
+                                    Log.w(TAG, "onDataChange: " + dataSnapshot.toString());
+                                    Log.w(TAG, "onDataChange: " + dataSnapshot.getKey() );
+                                    Log.w(TAG, "onDataChange: " + dataSnapshot.getValue());
+                                    Log.w(TAG, "onDataChange: " + dataSnapshot.exists() );
+
                                     if (dataSnapshot.exists()) {
-                                        Maybe.just("sent");
-                                        e.onSuccess("sent");
+                                        Maybe.just(dataSnapshot.getValue());
+                                        e.onSuccess((String) dataSnapshot.getValue());
                                     } else {
                                         Maybe.just("notFriend");
                                         e.onSuccess("notFriend");
@@ -279,6 +285,7 @@ public class FirebaseAuthDataStore implements FirebaseContract {
         });
     }
 
+    @Override
     public Completable sendFriendRequest(final String uId) {
         return Completable.create(new CompletableOnSubscribe() {
             @Override
@@ -317,6 +324,7 @@ public class FirebaseAuthDataStore implements FirebaseContract {
         });
     }
 
+    @Override
     public Completable cancelFriendRequest(final String uId) {
         return Completable.create(new CompletableOnSubscribe() {
             @Override
@@ -353,6 +361,7 @@ public class FirebaseAuthDataStore implements FirebaseContract {
         });
     }
 
+    @Override
     public Completable acceptedFriendRequest(final String uId) {
         return Completable.create(new CompletableOnSubscribe() {
             @Override
@@ -367,7 +376,7 @@ public class FirebaseAuthDataStore implements FirebaseContract {
                         .child(uId)
                         .child(currentUserId);
 
-                final String date = "";
+                final String date = DateProvider.getCurrentDate();
                 currentFriendsDataReference.setValue(date).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@android.support.annotation.NonNull Task<Void> task) {
@@ -393,6 +402,7 @@ public class FirebaseAuthDataStore implements FirebaseContract {
         });
     }
 
+    @Override
     public Completable deleteFriend(final String uId) {
         return Completable.create(new CompletableOnSubscribe() {
             @Override
@@ -430,6 +440,120 @@ public class FirebaseAuthDataStore implements FirebaseContract {
         });
     }
 
+    //onProgress
+    public Maybe<ArrayList<Credential>> getReceivedFriendRequest() {
+        return Maybe.create(new MaybeOnSubscribe<ArrayList<Credential>>() {
+            @Override
+            public void subscribe(@NonNull final MaybeEmitter<ArrayList<Credential>> e) throws Exception {
+                String currentUserId = getCurrentUserId();
+                DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference()
+                        .child("FriendRequest")
+                        .child(currentUserId);
+                databaseReference.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        final ArrayList<Credential> credentials = new ArrayList<>();
+
+                        if (dataSnapshot.exists()) {
+                            for (final DataSnapshot data : dataSnapshot.getChildren()) {
+                                String requestValue = (String) data.child("requestType").getValue();
+                                if (requestValue.equals("received")) {
+                                    DatabaseReference userReference = FirebaseDatabase.getInstance()
+                                            .getReference()
+                                            .child("Users");
+                                    userReference
+                                            .child(data.getKey())
+                                            .addValueEventListener(new ValueEventListener() {
+                                                @Override
+                                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                                    Credential credential = new Credential();
+                                                    credential.setId(dataSnapshot.getKey());
+                                                    credential.setName((String) dataSnapshot.child("name").getValue());
+                                                    credential.setAbout((String) dataSnapshot.child("about").getValue());
+                                                    credential.setImageUrl((String) dataSnapshot.child("imageUrl").getValue());
+                                                    credential.setThumbImageUrl((String) dataSnapshot.child("thumbImageUrl").getValue());
+                                                    credentials.add(credential);
+                                                }
+
+                                                @Override
+                                                public void onCancelled(DatabaseError databaseError) {
+                                                    e.onError(databaseError.toException());
+                                                }
+                                            });
+                                    Maybe.just(credentials);
+                                    e.onSuccess(credentials);
+                                }
+                                else {
+                                    Maybe.just(credentials);
+                                    e.onSuccess(credentials);
+                                }
+                            }
+                        } else {
+                            Maybe.just(credentials);
+                            e.onSuccess(credentials);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        e.onError(databaseError.toException());
+                    }
+                });
+            }
+        });
+    }
+
+    public Maybe<ArrayList<Credential>> getMyFriends() {
+        return Maybe.create(new MaybeOnSubscribe<ArrayList<Credential>>() {
+            @Override
+            public void subscribe(@NonNull final MaybeEmitter<ArrayList<Credential>> e) throws Exception {
+                String currentUserId = getCurrentUserId();
+                DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference()
+                        .child("FriendsData")
+                        .child(currentUserId);
+                final DatabaseReference userReference = FirebaseDatabase.getInstance().getReference()
+                        .child("Users");
+
+                databaseReference.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.exists()) {
+                            final ArrayList<Credential> credentials = new ArrayList<>();
+                            for (final DataSnapshot data : dataSnapshot.getChildren()) {
+                                userReference.child(data.getKey()).addValueEventListener(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot) {
+                                        Credential credential = new Credential();
+                                        credential.setId(dataSnapshot.getKey());
+                                        credential.setName((String) dataSnapshot.child("name").getValue());
+                                        credential.setAbout((String) dataSnapshot.child("about").getValue());
+                                        credential.setImageUrl((String) dataSnapshot.child("imageUrl").getValue());
+                                        credential.setThumbImageUrl((String) dataSnapshot.child("thumbImageUrl").getValue());
+                                        credentials.add(credential);
+                                    }
+
+                                    @Override
+                                    public void onCancelled(DatabaseError databaseError) {
+                                        e.onError(databaseError.toException());
+                                    }
+                                });
+                            }
+                            Maybe.just(credentials);
+                            e.onSuccess(credentials);
+                        }
+
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        e.onError(databaseError.toException());
+                    }
+                });
+            }
+        });
+    }
+
+
     //Firebase Storage
     @Override
     public Completable saveImageToStorage(final Uri resultUri) {
@@ -442,29 +566,29 @@ public class FirebaseAuthDataStore implements FirebaseContract {
                 imagesReference
                         .putFile(resultUri)
                         .addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
-                                    @Override
-                                    public void onComplete(@android.support.annotation.NonNull Task<UploadTask.TaskSnapshot> task) {
-                                        if (task.isSuccessful()) {
-                                            String image_url = String.valueOf(task.getResult().getDownloadUrl());
+                                                   @Override
+                                                   public void onComplete(@android.support.annotation.NonNull Task<UploadTask.TaskSnapshot> task) {
+                                                       if (task.isSuccessful()) {
+                                                           String image_url = String.valueOf(task.getResult().getDownloadUrl());
 
-                                            DatabaseReference databaseReference = FirebaseDatabase.getInstance()
-                                                    .getReference().child("Users").child(uId);
-                                            databaseReference.child("imageUrl").setValue(image_url)
-                                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                        @Override
-                                                        public void onComplete(@android.support.annotation.NonNull Task<Void> task) {
-                                                            if (task.isSuccessful()) {
-                                                                e.onComplete();
-                                                            } else {
-                                                                e.onError(task.getException());
-                                                            }
-                                                        }
-                                                    });
-                                        } else {
-                                            e.onError(task.getException());
-                                        }
-                                    }
-                                }
+                                                           DatabaseReference databaseReference = FirebaseDatabase.getInstance()
+                                                                   .getReference().child("Users").child(uId);
+                                                           databaseReference.child("imageUrl").setValue(image_url)
+                                                                   .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                       @Override
+                                                                       public void onComplete(@android.support.annotation.NonNull Task<Void> task) {
+                                                                           if (task.isSuccessful()) {
+                                                                               e.onComplete();
+                                                                           } else {
+                                                                               e.onError(task.getException());
+                                                                           }
+                                                                       }
+                                                                   });
+                                                       } else {
+                                                           e.onError(task.getException());
+                                                       }
+                                                   }
+                                               }
                         );
             }
         });
