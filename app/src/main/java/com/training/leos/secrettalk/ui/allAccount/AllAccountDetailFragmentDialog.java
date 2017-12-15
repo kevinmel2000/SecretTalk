@@ -15,6 +15,8 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 import com.training.leos.secrettalk.AllUserDetailContract;
 import com.training.leos.secrettalk.R;
@@ -29,14 +31,21 @@ import de.hdodenhof.circleimageview.CircleImageView;
  * A simple {@link Fragment} subclass.
  */
 public class AllAccountDetailFragmentDialog extends DialogFragment
-        implements AllUserDetailContract.View, View.OnClickListener{
-    @BindView(R.id.cimg_account_detail_thumb) CircleImageView cimgThumbImage;
-    @BindView(R.id.tv_account_detail_name) TextView tvName;
-    @BindView(R.id.tv_account_detail_email) TextView tvEmail;
-    @BindView(R.id.tv_account_detail_about_me) TextView tvAbout;
-    @BindView(R.id.tv_friend_request_description) TextView tvFriendReqDesc;
-    @BindView(R.id.btn_account_detail_friend_request_state) Button btnRequestState;
-    @BindView(R.id.btn_account_detail_friend_decline_request) Button btnDeclineRequest;
+        implements AllUserDetailContract.View, View.OnClickListener {
+    @BindView(R.id.cimg_account_detail_thumb)
+    CircleImageView cimgThumbImage;
+    @BindView(R.id.tv_account_detail_name)
+    TextView tvName;
+    @BindView(R.id.tv_account_detail_email)
+    TextView tvEmail;
+    @BindView(R.id.tv_account_detail_about_me)
+    TextView tvAbout;
+    @BindView(R.id.tv_friend_request_description)
+    TextView tvFriendReqDesc;
+    @BindView(R.id.btn_account_detail_friend_request_state)
+    Button btnRequestState;
+    @BindView(R.id.btn_account_detail_friend_decline_request)
+    Button btnDeclineRequest;
 
     public static final String TAG = AllAccountDetailFragmentDialog.class.getName();
     private ProgressDialog progressBar;
@@ -64,7 +73,7 @@ public class AllAccountDetailFragmentDialog extends DialogFragment
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.btn_account_detail_friend_request_state:
                 presenter.onRequestClicked(
                         getArguments().getString("userId"),
@@ -82,14 +91,30 @@ public class AllAccountDetailFragmentDialog extends DialogFragment
     }
 
     @Override
-    public void showAccountInformation(Credential data) {
+    public void showAccountInformation(final Credential data) {
         Log.w(TAG, "showAccountInformation: " + data.getName());
         String thumbImageUrl = data.getThumbImageUrl();
         if (thumbImageUrl != "default") {
             Picasso.with(getContext())
                     .load(data.getThumbImageUrl())
+                    .networkPolicy(NetworkPolicy.OFFLINE)
                     .placeholder(R.mipmap.ic_launcher_round)
-                    .into(cimgThumbImage);
+                    .into(cimgThumbImage, new Callback() {
+                        @Override
+                        public void onSuccess() {
+
+                        }
+
+                        @Override
+                        public void onError() {
+                            Picasso.with(getContext())
+                                    .load(data.getThumbImageUrl())
+                                    .placeholder(R.mipmap.ic_launcher_round)
+                                    .into(cimgThumbImage);
+                        }
+                    });
+        } else {
+            cimgThumbImage.setImageResource(R.mipmap.ic_launcher_round);
         }
         tvName.setText(data.getName());
         tvEmail.setText(data.getEmail());
@@ -97,22 +122,34 @@ public class AllAccountDetailFragmentDialog extends DialogFragment
     }
 
     @Override
-    public void inflateUserStateView(String desc, String state, String tag){
+    public void inflateUserStateView(String desc, String state, String tag) {
         tvFriendReqDesc.setText(desc);
         btnRequestState.setText(state);
         btnRequestState.setTag(tag);
     }
 
     @Override
-    public void disableUserStateView(){
+    public void disableUserStateView() {
         btnRequestState.setEnabled(false);
         btnRequestState.setBackgroundColor(ContextCompat.getColor(getContext(), android.R.color.darker_gray));
     }
 
     @Override
-    public void enableUserStateView(){
+    public void enableUserStateView() {
         btnRequestState.setEnabled(true);
         btnRequestState.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.primary_light));
+    }
+
+    @Override
+    public void showDeclineRequestButton() {
+        btnDeclineRequest.setVisibility(View.VISIBLE);
+        btnDeclineRequest.setEnabled(true);
+    }
+
+    @Override
+    public void hideDeclineRequestButton() {
+        btnDeclineRequest.setVisibility(View.GONE);
+        btnDeclineRequest.setEnabled(false);
     }
 
     @Override
@@ -125,16 +162,6 @@ public class AllAccountDetailFragmentDialog extends DialogFragment
     @Override
     public void hideProgressBar() {
         progressBar.dismiss();
-    }
-
-    @Override
-    public void showDeclineRequestButton() {
-        btnDeclineRequest.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void hideDeclineRequestButton() {
-        btnDeclineRequest.setVisibility(View.GONE);
     }
 
     @Override

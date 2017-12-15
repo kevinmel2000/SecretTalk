@@ -3,7 +3,7 @@ package com.training.leos.secrettalk.presenter;
 import android.util.Log;
 
 import com.training.leos.secrettalk.AllUserDetailContract;
-import com.training.leos.secrettalk.data.firebase.FirebaseAuthDataStore;
+import com.training.leos.secrettalk.data.DataManager;
 import com.training.leos.secrettalk.data.model.Credential;
 
 import io.reactivex.Completable;
@@ -17,11 +17,11 @@ import io.reactivex.schedulers.Schedulers;
 public class AllAccountDetailPresenter implements AllUserDetailContract.Presenter {
     private AllUserDetailContract.View view;
     private CompositeDisposable compositeDisposable;
-    private FirebaseAuthDataStore authentication;
+    private DataManager authentication;
 
     public AllAccountDetailPresenter(AllUserDetailContract.View view){
         this.view = view;
-        this.authentication = FirebaseAuthDataStore.getInstance();
+        this.authentication = DataManager.getInstance();
         this.compositeDisposable = new CompositeDisposable();
     }
 
@@ -58,7 +58,7 @@ public class AllAccountDetailPresenter implements AllUserDetailContract.Presente
                 }));
     }
 
-    public static final String TAG = AllAccountDetailPresenter.class.getSimpleName();
+    private static final String TAG = AllAccountDetailPresenter.class.getSimpleName();
     @Override
     public void onCheckUserFriendState(String uId){
         compositeDisposable.add(authentication.getUserFriendRequestState(uId)
@@ -72,7 +72,7 @@ public class AllAccountDetailPresenter implements AllUserDetailContract.Presente
                             case "friended":
                                 view.inflateUserStateView(
                                         "This person added as your friend :D",
-                                        "Remove Friend",
+                                        "Unfriend this person",
                                         "friended");
                                 break;
                             case "sent":
@@ -103,13 +103,13 @@ public class AllAccountDetailPresenter implements AllUserDetailContract.Presente
 
                     @Override
                     public void onComplete() {
-
+                        Log.w(TAG, "onComplete: ");
                     }
                 }));
     }
 
     @Override
-    public void onRequestClicked(final String uId, final String tag) {
+    public void onRequestClicked(final String uId, String tag) {
         view.disableUserStateView();
         Completable completable = null;
 
@@ -130,21 +130,28 @@ public class AllAccountDetailPresenter implements AllUserDetailContract.Presente
                 break;
         }
 
-        compositeDisposable.add(completable
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeWith(new DisposableCompletableObserver() {
-                    @Override
-                    public void onComplete() {
-                        view.enableUserStateView();
-                        onCheckUserFriendState(uId);
-                    }
+        if (completable != null) {
+            compositeDisposable.add(completable
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeWith(new DisposableCompletableObserver() {
+                        @Override
+                        public void onComplete() {
+                            view.enableUserStateView();
+                            view.hideDeclineRequestButton();
 
-                    @Override
-                    public void onError(@NonNull Throwable e) {
-                        view.enableUserStateView();
-                    }
-                }));
+                            onCheckUserFriendState(uId);
+                        }
+
+                        @Override
+                        public void onError(@NonNull Throwable e) {
+                            view.enableUserStateView();
+                        }
+                    })
+            );
+        }else {
+            view.showToast("Something wrong");
+        }
     }
 
     @Override

@@ -8,6 +8,8 @@ public class Credential {
     private String about;
     private String imageUrl;
     private String thumbImageUrl;
+    private boolean onlineStatus;
+    private String deviceToken;
 
     public Credential()  {
     }
@@ -76,5 +78,21 @@ public class Credential {
 
     public void setThumbImageUrl(String thumbImageUrl) {
         this.thumbImageUrl = thumbImageUrl;
+    }
+
+    public String getDeviceToken() {
+        return deviceToken;
+    }
+
+    public void setDeviceToken(String deviceToken) {
+        this.deviceToken = deviceToken;
+    }
+
+    public boolean getOnlineStatus() {
+        return onlineStatus;
+    }
+
+    public void setOnlineStatus(boolean onlineStatus) {
+        this.onlineStatus = onlineStatus;
     }
 }

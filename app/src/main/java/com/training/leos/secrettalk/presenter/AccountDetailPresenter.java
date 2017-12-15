@@ -3,7 +3,7 @@ package com.training.leos.secrettalk.presenter;
 import android.net.Uri;
 
 import com.training.leos.secrettalk.AccountDetailContract;
-import com.training.leos.secrettalk.data.firebase.FirebaseAuthDataStore;
+import com.training.leos.secrettalk.data.DataManager;
 import com.training.leos.secrettalk.data.model.Credential;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -16,12 +16,12 @@ import io.reactivex.schedulers.Schedulers;
 public class AccountDetailPresenter implements AccountDetailContract.Presenter{
     private AccountDetailContract.View view;
     private CompositeDisposable compositeDisposable;
-    private FirebaseAuthDataStore authentication;
+    private DataManager authentication;
 
     public AccountDetailPresenter(AccountDetailContract.View view) {
         this.view = view;
         this.compositeDisposable = new CompositeDisposable();
-        this.authentication = FirebaseAuthDataStore.getInstance();
+        this.authentication = DataManager.getInstance();
     }
 
     @Override

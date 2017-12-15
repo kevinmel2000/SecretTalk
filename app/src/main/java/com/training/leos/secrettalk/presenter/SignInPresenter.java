@@ -2,7 +2,7 @@ package com.training.leos.secrettalk.presenter;
 
 import com.training.leos.secrettalk.SignInContract;
 import com.training.leos.secrettalk.R;
-import com.training.leos.secrettalk.data.firebase.FirebaseAuthDataStore;
+import com.training.leos.secrettalk.data.DataManager;
 import com.training.leos.secrettalk.data.model.Credential;
 import com.training.leos.secrettalk.ui.signIn.SignInActivity;
 
@@ -16,12 +16,12 @@ public class SignInPresenter implements SignInContract.Presenter {
     static final String TAG = SignInPresenter.class.getSimpleName();
     private SignInContract.View view = new SignInActivity();
     private CompositeDisposable compositeDisposable;
-    private FirebaseAuthDataStore authentication;
+    private DataManager authentication;
 
     public SignInPresenter(SignInContract.View view) {
         this.view = view;
         this.compositeDisposable = new CompositeDisposable();
-        this.authentication = FirebaseAuthDataStore.getInstance();
+        this.authentication = DataManager.getInstance();
     }
 
     @Override

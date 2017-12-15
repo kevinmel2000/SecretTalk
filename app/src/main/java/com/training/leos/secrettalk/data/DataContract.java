@@ -1,4 +1,4 @@
-package com.training.leos.secrettalk.data.firebase;
+package com.training.leos.secrettalk.data;
 
 import android.net.Uri;
 
@@ -9,50 +9,34 @@ import java.util.ArrayList;
 import io.reactivex.Completable;
 import io.reactivex.Maybe;
 
-public interface FirebaseContract {
+public interface DataContract {
     String getCurrentUserId();
 
-    boolean isUserSignedIn();
+    boolean hasSignedInUser();
     boolean signOut();
     Completable signIn(Credential credential);
     Completable registration(Credential credential);
-
     Maybe<Credential> getUserCredential(String uId);
     Completable saveEditedCredential(Credential credential);
-
     Maybe<ArrayList<Credential>> getAllUsers();
-
     //onProgress
     Maybe<String> getUserFriendRequestState(String uId);
-
     Completable sendFriendRequest(String uId);
-
     Completable cancelFriendRequest(String uId);
-
     Completable acceptedFriendRequest(String uId);
-
     Completable deleteFriend(String uId);
-
     Completable saveImageToStorage(Uri resultUri);
     Completable saveThumbImageToStorage(byte[] bytes);
 
 
-
-
     interface Authentication {
-        boolean isUserSignedIn();
-        boolean signOut();
-        String getCurrentUserId();
-        Completable signIn(Credential credential);
-        Completable registration(Credential credential);
+
     }
+
     interface RealtimeDatabase {
-        Maybe<Credential> getUserCredential(String id);
-        Completable saveUserCredential(Credential credential, String id);
-        Completable saveEditedCredential(Credential credential, String uId);
+
     }
     interface Storage{
-        Completable saveImageToStorage(Uri resultUri, String uId);
-        Completable saveThumbImageToStorage(byte[] bytes, String uId);
+
     }
 }

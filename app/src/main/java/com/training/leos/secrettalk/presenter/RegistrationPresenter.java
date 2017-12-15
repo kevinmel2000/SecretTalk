@@ -3,7 +3,7 @@ package com.training.leos.secrettalk.presenter;
 import com.training.leos.secrettalk.RegistrationContract;
 import com.training.leos.secrettalk.R;
 import com.training.leos.secrettalk.data.DataConstants;
-import com.training.leos.secrettalk.data.firebase.FirebaseAuthDataStore;
+import com.training.leos.secrettalk.data.DataManager;
 import com.training.leos.secrettalk.data.model.Credential;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -16,12 +16,12 @@ import io.reactivex.schedulers.Schedulers;
 public class RegistrationPresenter implements RegistrationContract.Presenter {
     public static final String TAG = RegistrationPresenter.class.getSimpleName();
     private RegistrationContract.View view;
-    private FirebaseAuthDataStore authentication;
+    private DataManager authentication;
     private CompositeDisposable compositeDisposable;
 
     public RegistrationPresenter(RegistrationContract.View view) {
         this.view = view;
-        this.authentication = FirebaseAuthDataStore.getInstance();
+        this.authentication = DataManager.getInstance();
         this.compositeDisposable = new CompositeDisposable();
     }
 

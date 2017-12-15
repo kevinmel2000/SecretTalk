@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
@@ -25,6 +26,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class AllAccountActivity extends AppCompatActivity implements AllUserContract.View{
+    private static final String TAG = AllAccountActivity.class.getSimpleName();
     @BindView(R.id.rv_all_users) RecyclerView rvAllUsers;
     @BindView(R.id.toolbar_app) Toolbar toolbar;
 
@@ -54,6 +56,22 @@ public class AllAccountActivity extends AppCompatActivity implements AllUserCont
         rvAllUsers.setAdapter(accountsListView);
 
         presenter.onInitialize();
+    }
+
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        String action = getIntent().getAction();
+        String notifAction = "com.training.leos.secrettalk.REQUEST_NOTIFICATION";
+
+        Log.w(TAG, "onResume: " + getIntent().getStringExtra("userId"));
+
+        if (action != null && action.equals(notifAction)){
+            Log.w(TAG, "onResume: " + action );
+            startUserDetail(getIntent().getStringExtra("userId"));
+        }
     }
 
     @Override

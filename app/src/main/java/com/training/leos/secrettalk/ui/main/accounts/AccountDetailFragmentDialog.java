@@ -15,6 +15,8 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.training.leos.secrettalk.AccountDetailContract;
@@ -84,13 +86,27 @@ public class AccountDetailFragmentDialog extends DialogFragment implements Accou
     }
 
     @Override
-    public void showAccountInformation(Credential data) {
+    public void showAccountInformation(final Credential data) {
         String thumbImageUrl = data.getThumbImageUrl();
         if (thumbImageUrl != "default"){
             Picasso.with(getContext())
                     .load(data.getThumbImageUrl())
+                    .networkPolicy(NetworkPolicy.OFFLINE)
                     .placeholder(R.mipmap.ic_launcher_round)
-                    .into(cimgThumbImage);
+                    .into(cimgThumbImage, new Callback() {
+                        @Override
+                        public void onSuccess() {
+
+                        }
+
+                        @Override
+                        public void onError() {
+                            Picasso.with(getContext())
+                                    .load(data.getThumbImageUrl())
+                                    .placeholder(R.mipmap.ic_launcher_round)
+                                    .into(cimgThumbImage);
+                        }
+                    });
         }else {
             cimgThumbImage.setImageResource(R.mipmap.ic_launcher_round);
         }

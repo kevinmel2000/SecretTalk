@@ -3,17 +3,17 @@ package com.training.leos.secrettalk.presenter;
 import android.util.Log;
 
 import com.training.leos.secrettalk.MainContract;
-import com.training.leos.secrettalk.data.firebase.FirebaseAuthDataStore;
+import com.training.leos.secrettalk.data.DataManager;
 
 
 public class MainPresenter implements MainContract.Presenter{
 
     private MainContract.View view;
-    private FirebaseAuthDataStore authentication;
+    private DataManager authentication;
 
     public MainPresenter(MainContract.View view){
         this.view = view;
-        this.authentication = FirebaseAuthDataStore.getInstance();
+        this.authentication = DataManager.getInstance();
     }
 
     @Override
@@ -33,8 +33,8 @@ public class MainPresenter implements MainContract.Presenter{
 
     @Override
     public void onCheckActiveUser() {
-        Log.w("============", "onCheckActiveUser: " + authentication.isUserSignedIn());
-        if (!authentication.isUserSignedIn()){
+        Log.w("============", "onCheckActiveUser: " + authentication.hasSignedInUser());
+        if (!authentication.hasSignedInUser()){
             view.startLoginActivity();
         }
     }
